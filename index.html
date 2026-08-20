@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>LuckyLive</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #unity-container {
+        position: relative;
+        width: min(100vw, calc(100dvh * 9 / 16));
+        height: min(100dvh, calc(100vw * 16 / 9));
+        max-width: 100vw;
+        max-height: 100dvh;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        background: #231F20;
+      }
+      #unity-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        outline: none;
+        background: #231F20;
+      }
+      #loading {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+        font: 16px system-ui, sans-serif;
+        color: #fff;
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="unity-container">
+      <canvas id="unity-canvas" width="1080" height="1920" tabindex="-1"></canvas>
+      <div id="loading">載入中 0%</div>
+    </main>
+    <script src="Build/LuckyLiveWeb.loader.js"></script>
+    <script>
+      const canvas = document.querySelector('#unity-canvas');
+      const loading = document.querySelector('#loading');
+
+      createUnityInstance(canvas, {
+        arguments: [],
+        dataUrl: 'Build/LuckyLiveWeb.data.unityweb',
+        frameworkUrl: 'Build/LuckyLiveWeb.framework.js.unityweb',
+        codeUrl: 'Build/LuckyLiveWeb.wasm.unityweb',
+        streamingAssetsUrl: 'StreamingAssets',
+        companyName: "LuckyLive",
+        productName: "LuckyLive",
+        productVersion: "1.0",
+      }, (progress) => {
+        loading.textContent = `載入中 ${Math.round(progress * 100)}%`;
+      }).then(() => {
+        loading.remove();
+      }).catch((message) => {
+        loading.textContent = '載入失敗';
+        alert(message);
+      });
+    </script>
+  </body>
+</html>
